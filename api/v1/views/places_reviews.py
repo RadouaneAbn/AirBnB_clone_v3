@@ -81,14 +81,17 @@ def create_review(place_id):
     if 'user_id' not in request_data:
         abort(400, description="Missing user_id")
 
-    user = get_object_by_id(User, request_data['user_id'])
+    user_id = request_data['user_id']
+    user = get_object_by_id(User, user_id)
     if user is None:
         abort(404)
 
     if 'text' not in request_data:
         abort(400, description="Missing text")
 
-    new_review = Review(**request_data)
+    new_review = Review()
+    new_review.text = request_data['text']
+    new_review.user_id = user_id
     new_review.place_id = place_id
     new_review.save()
     return new_review.to_dict(), 201

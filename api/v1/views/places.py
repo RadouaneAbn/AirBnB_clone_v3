@@ -73,14 +73,17 @@ def create_place(city_id):
     if 'user_id' not in request_data:
         abort(400, description="Missing user_id")
 
-    user = get_object_by_id(User, request_data['user_id'])
+    user_id = request_data['user_id']
+    user = get_object_by_id(User, user_id)
     if user is None:
         abort(404)
 
     if 'name' not in request_data:
         abort(400, description="Missing name")
 
-    new_place = Place(**request_data)
+    new_place = Place()
+    new_place.name = request_data['name']
+    new_place.user_id = user_id
     new_place.city_id = city_id
     new_place.save()
     return new_place.to_dict(), 201
